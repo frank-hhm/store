@@ -58,10 +58,10 @@ yarn build
 
 ~~~
 location / {
-  if (!-e $request_filename){
-  	rewrite ^/(.*)$ /index.php/$1 last;
-  	break;
-  }
+    if (!-e $request_filename){
+        rewrite ^/(.*)$ /index.php/$1 last;
+        break;
+    }
 }
 ~~~
 ## 
