@@ -115,7 +115,6 @@ class GoodsServer extends BaseController
             $this->success('删除成功!');
         }
         $this->error('删除失败!');
-        
     }
 
     /**

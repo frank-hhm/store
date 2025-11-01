@@ -45,7 +45,6 @@ const changePageLimit = (val: number) => {
 };
 
 const changeCurPage = (val: number) => {
-    console.log(val)
     page.value = val;
     refresh();
 };

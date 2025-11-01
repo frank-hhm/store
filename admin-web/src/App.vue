@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { getCurrentInstance, onMounted, watch, onBeforeUnmount, nextTick } from "vue";
 import { storeToRefs } from "pinia";
-import { useAdminStore, useAppStore, useEnumStore, useWebsocketStore } from "@/store";
+import { useAdminStore, useAppStore, useEnumStore, useRegionsStore, useWebsocketStore } from "@/store";
 
 const { systemInfo, isDark } = storeToRefs(useAppStore());
 
@@ -15,6 +15,7 @@ const {
 } = getCurrentInstance() as any;
 
 useEnumStore().initEnum();
+useRegionsStore().initRegions();
 
 useAppStore().getSystemInfo();
 useAppStore().setDark(isDark.value)

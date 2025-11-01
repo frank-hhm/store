@@ -38,3 +38,31 @@ export type EnumItemType = {
 export type EnumType = Array<EnumItemType>
 
 export type EnumListsType = Record<string, EnumType>
+
+
+export type RegionsItemType = {
+    code:string;
+    first:string;
+    id:number;
+    lat:string;
+    level:number;
+    lng:string;
+    merger_name:string;
+    name:string;
+    pid:number;
+    pinyin:string;
+    shortname:string;
+    zip_code:string;
+    city: RegionsItemType[] | null
+}
+
+export interface RegionsType {
+    count: {
+        city: number;
+        province: number;
+        region:number;
+        total:number;
+    };
+    tree: RegionsItemType[];
+}
+

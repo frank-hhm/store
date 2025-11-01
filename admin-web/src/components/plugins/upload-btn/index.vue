@@ -249,7 +249,7 @@ onMounted(() => {
     height: 14px;
     line-height: 14px;
     cursor: pointer;
-    border-radius:var(--base-radius-default);
+    border-radius:14px;
     background: rgba(0, 0, 0, 0.3);
     text-align: center;
     opacity: 0;
@@ -257,7 +257,7 @@ onMounted(() => {
 
 
 .upload-select-del .icon {
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .upload-select-bottom {
@@ -266,13 +266,14 @@ onMounted(() => {
     left: 0;
     width: 100%;
     display: flex;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.4);
     line-height: 1.5;
     color: var(--color-white);
     justify-content: space-around;
     border-bottom-left-radius: var(--base-radius-default);
     border-bottom-right-radius: var(--base-radius-default);
     opacity: 0;
+    font-size: 10px;
 }
 
 .upload-select-btn:hover .upload-select-bottom {

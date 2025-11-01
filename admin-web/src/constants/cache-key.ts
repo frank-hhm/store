@@ -16,6 +16,8 @@ class CacheKey {
     static ENUM = `${PREFIX}-enum-key`
     static PAGE_LIMIT = `${PREFIX}-page-limit-key`
     static LOGINDATA = `${PREFIX}-login-data`
+    static REGIONS = `${PREFIX}-regions`
+    
 }
 
 export default CacheKey

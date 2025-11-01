@@ -15,7 +15,7 @@
                     </template>
                 </a-dropdown>
                 <a-button v-permission="'store-goods-label-create'" size="small" type="primary" @click="onCreate(0)">
-                    添加新标签
+                    新增标签
                 </a-button>
                 <createGoodsLabelComponent ref="createGoodsLabelComponentRef" @success="toInit(true)">
                 </createGoodsLabelComponent>

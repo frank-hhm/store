@@ -1,7 +1,7 @@
 /** 统一处理 localStorage */
 
 import CacheKey from "@/constants/cache-key"
-import { SystemInfoType, MenusListsType, EnumListsType, PageLimitType } from "@/types"
+import { SystemInfoType, MenusListsType, EnumListsType, PageLimitType, RegionsType } from "@/types"
 import { getStorage, setStorage } from "@/utils"
 
 export const getCacheLayout = () => {
@@ -37,6 +37,14 @@ export const getCacheEnum = () => {
 }
 export const setCacheEnum = (data: EnumListsType) => {
   setStorage(CacheKey.ENUM, data)
+}
+
+
+export const getCacheRegions = () => {
+  return getStorage(CacheKey.REGIONS)
+}
+export const setCacheRegions = (data: RegionsType) => {
+  setStorage(CacheKey.REGIONS, data)
 }
 
 

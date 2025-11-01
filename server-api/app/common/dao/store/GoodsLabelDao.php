@@ -31,7 +31,7 @@ class GoodsLabelDao extends BaseDao
      */
     public function getGoodsLabelList($where, int $page, int $limit): array
     {
-        return $this->search($where)->order('id DESC')->page($page)->paginate($limit)->toArray();
+        return $this->model->where($where)->order('id DESC')->page($page)->paginate($limit)->toArray();
     }
 
     /**
@@ -39,6 +39,6 @@ class GoodsLabelDao extends BaseDao
      */
     public function getGoodsLabelSelect(array $where = []): array
     {
-        return $this->search($where)->order('id DESC')->select()->toArray();
+        return $this->model->where($where)->order('id DESC')->select()->toArray();
     }
 }

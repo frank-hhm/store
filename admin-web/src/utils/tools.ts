@@ -2,6 +2,7 @@ import { EnumType, Result, ResultError } from '@/types';
 import { Message } from '@arco-design/web-vue';
 import { request } from './request/default';
 import { useAppStoreHook } from '@/store';
+import { inArray } from './data/array';
 
 export const baseApiUrl = () => {
     let domain = window.location.protocol+"//"+window.location.hostname + '/'
@@ -158,6 +159,34 @@ export const setDocumentTitle = (menu_name: string) => {
     }
 }
 
+
+
+// 将选中的区域id集格式化为树状格式
+export const getRegionsTreeData = (checkedData: any, regions: any) => {
+  var treeData: any = {};
+  checkedData.province?.forEach((provinceId: number) => {
+    var province = regions[provinceId],
+      citys: any[] = [],
+      cityCount = 0;
+    for (var cityIndex in province.city) {
+      if (province.city.hasOwnProperty(cityIndex)) {
+        var cityItem = province.city[cityIndex];
+        if (inArray(cityItem.id, checkedData.citys)) {
+          citys.push({ id: cityItem.id, name: cityItem.name });
+        }
+        cityCount++;
+      }
+    }
+    treeData[province.id] = {
+      id: province.id,
+      name: province.name,
+      citys: citys,
+      isAllCitys: citys.length === cityCount,
+    };
+  });
+  return treeData;
+};
+
 export default {
     baseApiUrl,
     baseWsUrl,
@@ -171,5 +200,6 @@ export default {
     getEnumName,
     downloadVideo,
     isMobileOrSmallScreen,
-    setDocumentTitle
+    setDocumentTitle,
+    getRegionsTreeData
 }

@@ -30,7 +30,7 @@ class GoodsCategoryDao extends BaseDao
      */
     public function getGoodsCategorySelect($where, int $page, int $limit): array
     {
-        return $this->search($where)->order('sort DESC,id DESC')->page($page, $limit)->select()->toArray();
+        return $this->model->where($where)->order('sort DESC,id DESC')->page($page, $limit)->select()->toArray();
     }
 
     /**
@@ -38,7 +38,7 @@ class GoodsCategoryDao extends BaseDao
      */
     public function getGoodsCategoryAll(array $searchWhere = [], array $field = ['*'], array $where = []): array
     {
-        return $this->search($searchWhere)->when(count($where), function ($query) use ($where) {
+        return $this->model->where($searchWhere)->when(count($where), function ($query) use ($where) {
             $query->where($where);
         })->field($field)->order('sort DESC,id DESC')->select()->toArray();
     }

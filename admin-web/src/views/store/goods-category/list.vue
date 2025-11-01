@@ -9,7 +9,7 @@
                     <a-button @click="toInit" size="small"><icon-refresh /></a-button>
                 </a-tooltip>
                 <a-button size="small" v-permission="'store-goods_cate-create'" type="primary" @click="onCreate(0)">
-                    添加分类
+                   新增分类
                 </a-button>
                 <createGoodsCateComponent ref="createGoodsCateComponentRef" @success="toInit()">
                 </createGoodsCateComponent>

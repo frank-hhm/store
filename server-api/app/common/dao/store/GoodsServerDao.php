@@ -31,7 +31,7 @@ class GoodsServerDao extends BaseDao
      */
     public function getGoodsServerList(array $where, int $page, int $limit): array
     {
-        return $this->search($where)->order('sort DESC,id DESC')->page($page)->paginate($limit)->toArray();
+        return $this->model->where($where)->order('sort DESC,id DESC')->page($page)->paginate($limit)->toArray();
     }
 
     /**
@@ -39,7 +39,7 @@ class GoodsServerDao extends BaseDao
      */
     public function getGoodsServerSelect(array $searchWhere = [], array $field = ['*'], array $where = []): array
     {
-        return $this->search($searchWhere)->when(count($where), function ($query) use ($where) {
+        return $this->model->where($searchWhere)->when(count($where), function ($query) use ($where) {
             $query->where($where);
         })->field($field)->order('sort DESC,id DESC')->select()->toArray();
     }

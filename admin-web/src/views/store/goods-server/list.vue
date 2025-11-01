@@ -16,7 +16,7 @@
                 </a-dropdown>
 
                 <a-button v-permission="'store-goods-server-create'" size="small" type="primary" @click="onCreate(0)">
-                    添加新服务
+                    新增服务
                 </a-button>
                 <!-- 添加 -->
                 <createGoodsServerComponent ref="createGoodsServerComponentRef" @success="toInit(true)">
