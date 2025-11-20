@@ -43,9 +43,16 @@ class GoodsCategoryService extends BaseService
     /**
      * 获取分类列表
      */
-    public function getGoodsCategoryList(array $where = [], array $field = ['*']): array
+    public function getGoodsCategoryList(array $params = [], array $field = ['*']): array
     {
-        $data = $this->dao->getGoodsCategoryAll($where,$field);
+        $filter = [];
+        if (!empty($params["status"])){
+            $filter[] = ["status","=",$params["status"]];
+        }
+        if (!empty($params["category_name"])){
+            $filter[] = ["category_name","like","%".$params["category_name"]."%"];
+        }
+        $data = $this->dao->getGoodsCategoryAll($filter,$field);
         return ArrayHelper::getArrayTreeChildren($data);
     }
 

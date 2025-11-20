@@ -38,10 +38,14 @@ class GoodsServerService extends BaseService
     /**
      * 获取服务列表
      */
-    public function getGoodsServerList(array $where): array
+    public function getGoodsServerList(array $params): array
     {
         [$page, $limit] = $this->dao->getPageValue();
-        return $this->dao->getGoodsServerList($where, $page, $limit);
+        $filter = [];
+        if (!empty($params["server_name"])){
+            $filter[] = ["server_name","like","%".$params["server_name"]."%"];
+        }
+        return $this->dao->getGoodsServerList($filter, $page, $limit);
     }
 
     /**

@@ -36,7 +36,7 @@ import { EnumItemType, Result, ResultError } from "@/types";
 import { useSetting } from "@/hooks/useSetting";
 import { getStoreGoodsSpecTemplatesDetailApi, createStoreGoodsSpecTemplatesApi, updateStoreGoodsSpecTemplatesApi } from "@/api/store/goods-spec-templates";
 import { useAppStore, useEnumStore } from "@/store";
-import storeGoodsSpecValue from "./goods-spec-value.vue";
+import storeGoodsSpecValue from "@/components/store/goods/spec-value.vue";
 import { storeToRefs } from "pinia";
 
 const { isMobile } = storeToRefs(useAppStore());

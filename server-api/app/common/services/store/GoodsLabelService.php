@@ -42,7 +42,11 @@ class GoodsLabelService extends BaseService
     public function getGoodsLabelList(array $params = [])
     {
         [$page, $limit] = $this->dao->getPageValue();
-        $list = $this->dao->getGoodsLabelList($params, $page, $limit);
+        $filter = [];
+        if (!empty($params["label_name"])){
+            $filter[] = ["label_name","like","%".$params["label_name"]."%"];
+        }
+        $list = $this->dao->getGoodsLabelList($filter, $page, $limit);
         return $list;
     }
     /**

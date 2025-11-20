@@ -65,7 +65,7 @@ export default defineConfig({
     // 是否开启 https
     https: false,
     // 端口号
-    port: 80,
+    port: 82,
     host: 'localhost',
     // proxy: {
     //   '/sys': {

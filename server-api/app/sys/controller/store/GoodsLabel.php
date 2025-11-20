@@ -31,7 +31,7 @@ class GoodsLabel extends BaseController
     public function list()
     {
         $param = $this->request->getMore([
-
+            ["label_name",""]
         ]);
         $this->success("获取成功",$this->service->getGoodsLabelList($param));
     }

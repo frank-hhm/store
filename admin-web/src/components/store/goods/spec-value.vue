@@ -33,22 +33,22 @@
                                     规格图片
                                 </div>
                                 <div>
-                                    <a-switch type="round" size="small" v-model="item.is_img" inline-prompt
+                                    <a-switch type="round" size="small" v-model="item.is_image" inline-prompt
                                         :checked-value="1" :unchecked-value="0"
-                                        @change="changeImgStatus($event, item)"></a-switch>
+                                        @change="changeImageStatus($event, item)"></a-switch>
                                 </div>
                             </div>
                         </div>
                         <div class="goods-spec-value-box" v-if="item.values.length > 0">
                             <template v-for="(items, idx) in item.values" :key="idx">
-                                <div class="goods-spec-value-item" :class="item.is_img == 1 ? 'is-image' : ''">
+                                <div class="goods-spec-value-item" :class="item.is_image == 1 ? 'is-image' : ''">
                                     <span class="goods-spec-value-item-drag icon icon-drag" draggable="true"
                                         @dragstart="specValueDragstart(index, items)"
                                         @dragenter="specValueDragenter(index, items, $event)"
                                         @dragend="specValueDragend(index, items, $event)"
                                         @dragover="specValueDragover($event)"></span>
-                                    <span v-if="item.is_img == 1" class="mr10">
-                                        <upload-btn v-model="items.img" width="46px" height="46px" padding="0"
+                                    <span v-if="item.is_image == 1" class="mr10">
+                                        <upload-btn v-model="items.image" width="46px" height="46px" padding="0"
                                             count="1"></upload-btn>
                                     </span>
                                     <span class="goods-spec-name">{{ items.name }}</span>
@@ -175,10 +175,10 @@ const specValueDragover = (e: any) => {
     e.preventDefault();
 };
 
-const changeImgStatus = (e: string | number | boolean, item: any) => {
+const changeImageStatus = (e: string | number | boolean, item: any) => {
     if (e == 0) {
-        item.value.forEach((items: { img: string; name: string }) => {
-            items.img = "";
+        item.value.forEach((items: { image: string; name: string }) => {
+            items.image = "";
         });
     }
 };

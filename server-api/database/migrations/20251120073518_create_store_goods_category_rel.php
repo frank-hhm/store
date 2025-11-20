@@ -3,7 +3,7 @@
 use think\migration\Migrator;
 use think\migration\db\Column;
 
-class CreateStoreGoodsSpecValue extends Migrator
+class CreateStoreGoodsCategoryRel extends Migrator
 {
     /**
      * Change Method.
@@ -28,18 +28,13 @@ class CreateStoreGoodsSpecValue extends Migrator
      */
     public function change()
     {
-
-
-        $table = $this->table('store_goods_spec_value');
+        $table = $this->table('store_goods_category_rel');
         $table
-            ->addColumn(Column::string('name')->setLimit(120)->setDefault("")->setComment('规格组名称'))
-            ->addColumn(Column::integer('spec_id')->setLimit(11)->setDefault(0)->setComment('关联规格组ID'))
+            ->addColumn(Column::integer('category_id')->setLimit(11)->setDefault(0)->setComment('分类ID'))
             ->addColumn(Column::integer('goods_id')->setLimit(11)->setDefault(0)->setComment('关联的商品ID'))
-            ->addColumn(Column::tinyInteger('is_image')->setLimit(3)->setDefault(0)->setComment('是否存在图片'))
-            ->addColumn(Column::string('image')->setLimit(255)->setDefault("")->setComment('图片地址'))
             ->setPrimaryKey('id')
-            ->addIndex(['id',"goods_id","spec_id"])
-            ->setComment('商城-商品规格表')
+            ->addIndex(['category_id','goods_id'])
+            ->setComment('商城-商品分类中间表')
             ->create();
     }
 }
