@@ -125,6 +125,55 @@
               </a-form-item>
             </div>
             <!-- 批量设置 -->
+            <div class="mt10" v-if="createForm.spec_type == 2 && createForm.spec.length > 0">
+              <a-form-item :label-col-flex="labelColFlex">
+                <a-table :data="batchForm" style="width: 100%" :pagination="false">
+                  <template #columns>
+                    <a-table-column title="批量设置" align="left" :width="120">
+                      <template #cell="{ record, rowIndex }"> <a-button size="mini"
+                          @click="onBatchFormData">确定设置</a-button></template>
+                    </a-table-column>
+                    <template v-for="(item, index) in specForm" :key="index">
+                      <a-table-column :data-index="item.key" :title="item.name" align="left" header-cell-class="te"
+                        :width="120">
+                        <template #cell="{ record, rowIndex }">
+                          <a-form-item row-class="mb0" hide-asterisk hide-label :field="item.required
+                            ? `batchForm[${rowIndex}].${item.key}`
+                            : ''
+                            " validate-trigger="blur">
+                            <template v-if="item.type && item.type == 'input'">
+                              <a-input aria-hidden v-model="record[item.key]" size="mini" />
+                            </template>
+                            <template v-if="item.type && item.type == 'input-number'">
+                              <a-input-number aria-hidden v-model="record[item.key]" size="mini"
+                                :precision="item.precision ? item.precision : 0" />
+                            </template>
+
+                            <template v-else-if="item.type && item.type == 'image'">
+                              <div class="spec-table-column-img">
+                                <upload-btn v-model="record[item.key]" width="40px" height="40px"
+                                  count="1"></upload-btn>
+                              </div>
+
+                            </template>
+
+                            <template v-else>
+                              <template v-if="record[item.key].image">
+                                <a-image width="40px" height="40px" :src="record[item.key].image" fit="contain" />
+                              </template>
+                              <span class="ml5 te">
+                                {{ record[item.key].name }}
+                              </span>
+                            </template>
+                          </a-form-item>
+                        </template>
+                      </a-table-column>
+                    </template>
+                  </template>
+                </a-table>
+              </a-form-item>
+            </div>
+
             <div class="mt10" v-if="createForm.spec_type == 2">
               <a-form-item :label-col-flex="labelColFlex" field="spec" :rules="[{ validator: specValid }]">
                 <template v-if="createForm.spec.length > 0">
@@ -545,6 +594,12 @@ const createForm = ref<any>({
   buy_least_type: 0,
 });
 
+const batchForm = ref<specFormValueType[]>([
+  {
+    ...specFormValue.value
+  }
+])
+
 // 修改的规格数据
 const updateSpecData = ref<any>([]);
 
@@ -940,6 +995,37 @@ watch(
   },
   { deep: true }
 );
+
+
+const onBatchFormData = () => {
+  createForm.value.spec.forEach((item: any, index: number) => {
+    if (batchForm.value[0].goods_image) {
+      item.goods_image = batchForm.value[0].goods_image;
+    }
+    if (batchForm.value[0].bar_code) {
+      item.bar_code = batchForm.value[0].bar_code;
+    }
+    if (batchForm.value[0].cost_price) {
+      item.cost_price = batchForm.value[0].cost_price;
+    }
+    if (batchForm.value[0].market_price) {
+      item.market_price = batchForm.value[0].market_price;
+    }
+    if (batchForm.value[0].price) {
+      item.price = batchForm.value[0].price;
+    }
+    if (batchForm.value[0].stock) {
+      item.stock = batchForm.value[0].stock;
+    }
+    if (batchForm.value[0].volume) {
+      item.volume = batchForm.value[0].volume;
+    }
+    if (batchForm.value[0].weight) {
+      item.weight = batchForm.value[0].weight;
+    }
+  })
+  console.log(batchForm.value, createForm.value.spec)
+}
 </script>
 
 

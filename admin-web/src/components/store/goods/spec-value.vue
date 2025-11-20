@@ -189,7 +189,6 @@ const refresh = (data: any = []) => {
 watch(
     () => specData.value,
     (val) => {
-        console.log(1111,val)
         emit("update:modelValue", val);
     },
     { deep: true }

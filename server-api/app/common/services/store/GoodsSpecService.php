@@ -28,7 +28,7 @@ class GoodsSpecService extends BaseService
 
     public function getGoodsSpecData($goodsId): array
     {
-        $select = $this->dao->where(['goods_id'=>$goodsId])->with(['values'])->select();
+        $select = $this->dao->model->where(['goods_id'=>$goodsId])->with(['values'])->select();
         return $select->toArray();
     }
 

@@ -6,7 +6,7 @@ namespace app\sys\services\store;
 
 use app\common\exception\CommonException;
 use app\common\helper\ArrayHelper;
-use app\common\services\store\GoodsSkuService;
+use app\sys\services\store\GoodsSkuService;
 use think\facade\Db;
 
 /**
@@ -28,8 +28,8 @@ class GoodsService extends \app\common\services\store\GoodsService
         ];
         $specData = [];
         if($detail['spec_type']['value'] == 2){
-            $specData = GoodsSpecService::instance()->getGoodsSpecData($detail['id']);
-            $spec = GoodsSkuService::instance()->attrFormat($specData);
+            $specData = app(GoodsSpecService::class)->getGoodsSpecData($detail['id']);
+            $spec = app(GoodsSkuService::class)->attrFormat($specData);
             foreach ( $detail['sku'] as $key => &$item) {
                 $skuAttr = explode(':',$item['sku_attr']);
                 $specValueSku = ArrayHelper::getArray2Column($specData,'values');
@@ -56,7 +56,7 @@ class GoodsService extends \app\common\services\store\GoodsService
         if (!empty($params["goods_name"])){
             $filter[] = ["goods_name","like","%".$params["goods_name"]."%"];
         }
-        return $this->dao->model->with(["category"])->where($filter)->order('goods_status DESC')->page($page)->paginate($limit)->toArray();
+        return $this->dao->model->with(["category","sku"])->where($filter)->order('goods_status DESC')->page($page)->paginate($limit)->toArray();
     }
     /**
      * 添加商品
