@@ -10,7 +10,7 @@
       height
     }">
       <a-form :model="createForm" ref="createRef" :rules="createRules" v-loading="initLoading">
-        <div class="form-main" v-if="tabIndex === 0">
+        <div class="form-main" v-show="tabIndex === 0">
           <div class="form-main-item">
             <div class="form-main-item-input">
               <a-form-item :label-col-flex="labelColFlex" label="商品名称" field="goods_name" validate-trigger="blur">
@@ -20,8 +20,8 @@
           </div>
           <div class="form-main-item">
             <div class="form-main-item-input">
-              <a-form-item :label-col-flex="labelColFlex" label="商品分类" field="cate_id" validate-trigger="blur">
-                <componentStoreGoodsSelectCategory v-model="createForm.cate_id"></componentStoreGoodsSelectCategory>
+              <a-form-item :label-col-flex="labelColFlex" label="商品分类" field="category_id" validate-trigger="blur">
+                <componentStoreGoodsSelectCategory v-model="createForm.category_id"></componentStoreGoodsSelectCategory>
               </a-form-item>
             </div>
           </div>
@@ -53,7 +53,7 @@
             </div>
           </div>
         </div>
-        <div class="form-main"  v-if="tabIndex === 1">
+        <div class="form-main" v-show="tabIndex === 1">
           <div class="form-main-item">
             <a-form-item :label-col-flex="labelColFlex" label="商品规格" field="spec_type" validate-trigger="blur">
               <a-radio-group v-model="createForm.spec_type">
@@ -99,17 +99,9 @@
           <template v-else>
             <div class="form-main-item">
               <a-form-item :label-col-flex="labelColFlex" label="规格模版">
-                <a-select placeholder="请选择商品标签" v-model="specTemplatesId">
-                  <a-option v-for="item in specTemplatesData" :key="item.id" :label="item.spec_temp_name"
-                    :value="item.id">{{ item.spec_temp_name }}</a-option>
-                </a-select>
-                <a-button class="ml10" type="outline" @click="onSelectedTemplates">
-                  确定模版
-                </a-button>
-                <a-button class="ml10" v-permission="'store-goods_spec_templates-create'" type="text"
-                  @click="onCreateSpecTemplates">
-                  新增规格模板
-                </a-button>
+                <componentStoreGoodsSelectSpecTemplates v-model="specTemplatesId"
+                  @change="onChangeStoreGoodsSelectSpecTemplates">
+                </componentStoreGoodsSelectSpecTemplates>
                 <template #extra>
                   可选择已保存的对应模版进行生成
                 </template>
@@ -123,8 +115,7 @@
             <div class="mt10">
               <a-form-item :label-col-flex="labelColFlex" label="">
                 <div class="flex">
-                  <a-input placeholder="请输入规格名" v-model="specName">
-                  </a-input>
+                  <a-input placeholder="请输入规格名" v-model="specName"></a-input>
                   <a-button class="ml10" type="primary" bg text @click="onCreateSpecName()">添加新规格</a-button>
                   <a-button class="ml10" type="primary" @click="onSaveSpec">生成规格属性</a-button>
                 </div>
@@ -133,14 +124,15 @@
                 </template>
               </a-form-item>
             </div>
-
+            <!-- 批量设置 -->
             <div class="mt10" v-if="createForm.spec_type == 2">
               <a-form-item :label-col-flex="labelColFlex" field="spec" :rules="[{ validator: specValid }]">
                 <template v-if="createForm.spec.length > 0">
                   <a-table :data="createForm.spec" style="width: 100%" :pagination="false">
                     <template #columns>
                       <template v-for="(item, index) in headColumns" :key="index">
-                        <a-table-column :data-index="item.key" :title="item.name" align="left" header-cell-class="te">
+                        <a-table-column :data-index="item.key" :title="item.name" align="left" header-cell-class="te"
+                          :width="120">
                           <template #cell="{ record, rowIndex }">
                             <a-form-item row-class="mb0" hide-asterisk hide-label :field="item.required
                               ? `spec[${rowIndex}].${item.key}`
@@ -181,17 +173,14 @@
             </div>
           </template>
         </div>
-
-        <a-form-item :label-col-flex="labelColFlex" field="content"  v-if="tabIndex === 2">
+        <a-form-item :label-col-flex="labelColFlex" field="content" v-show="tabIndex === 2">
           <div class="flex start mt30">
             <div class="goods-content-editor mr50">
               <editor ref="editorRef" height="600px" v-model="createForm.content"></editor>
             </div>
           </div>
         </a-form-item>
-
-
-        <div class="form-main"  v-if="tabIndex === 3">
+        <div class="form-main" v-show="tabIndex === 3">
           <div class="form-main-item">
             <div class="form-main-item-input">
               <a-form-item :label-col-flex="labelColFlex" label="配送方式：" field="delivery_type">
@@ -242,7 +231,7 @@
           </div>
         </div>
 
-        <div class="form-main"  v-if="tabIndex === 4">
+        <div class="form-main" v-show="tabIndex === 4">
           <div class="form-main-item">
             <div class="form-main-item-input">
               <a-form-item :label-col-flex="labelColFlex" label="商品服务" field="goods_server">
@@ -358,9 +347,6 @@
         </a-form-item>
       </a-form>
 
-      <!-- 添加规格模版组件 -->
-      <storeGoodsSpecTemplatesCreate ref="storeGoodsSpecTemplatesCreateRef" @success="toSpecTemplatesInit">
-      </storeGoodsSpecTemplatesCreate>
 
       <!-- 添加运费模版组件 -->
       <storeShippingTemplatesCreate ref="storeShippingTemplatesCreateRef" @success="toShippingTemplatesInit">
@@ -372,16 +358,15 @@
 <script lang="ts" setup>
 import { createStoreGoodsApi, createStoreGoodsSpecApi, getStoreGoodsDetailApi, updateStoreGoodsApi } from "@/api/store/goods";
 
-import { getStoreGoodsSpecTemplatesSelectApi } from "@/api/store/goods-spec-templates";
 import { getStoreShippingTemplatesSelectApi } from "@/api/store/shipping-templates";
 
 import storeShippingTemplatesCreate from "./../shipping-templates/create.vue";
-import storeGoodsSpecTemplatesCreate from "./../goods-spec-templates/create.vue";
 import storeGoodsSpec from "@/components/store/goods/spec-value.vue";
 import componentStoreGoodsSelectLabel from "@/components/store/goods/select-label.vue";
 import componentStoreGoodsSelectUnit from "@/components/store/goods/select-unit.vue";
 import componentStoreGoodsSelectCategory from "@/components/store/goods/select-category.vue";
 import componentStoreGoodsSelectServer from "@/components/store/goods/select-server.vue";
+import componentStoreGoodsSelectSpecTemplates from "@/components/store/goods/select-spec-templates.vue";
 
 import router from "@/router";
 import { Result, ResultError, EnumItemType } from "@/types";
@@ -530,7 +515,7 @@ const specFormValue = ref<specFormValueType>({
 });
 
 const createForm = ref<any>({
-  cate_id: [],
+  category_id: [],
   goods_name: "",
   goods_unit: null,
   goods_code: "",
@@ -601,7 +586,7 @@ const buyLimitValid = (value: any, cb: any) => {
 };
 
 const createRules: any = reactive({
-  cate_id: [{ required: true, message: "请选择商品分类" }],
+  category_id: [{ required: true, message: "请选择商品分类" }],
   goods_name: [{ required: true, message: "请输入商品名称！" }],
   delivery_type: [{ required: true, message: "请选择配送方式！" }],
   goods_images: [{ required: true, message: "商品图片不能为空！" }],
@@ -621,12 +606,7 @@ const operationId = ref<number | string>(0);
 const btnLoading = ref<boolean>(false);
 
 const toInit = () => {
-  //   toCateInit();
-  //   toUnitInit();
-  //   toLabelInit();
-  //   toShippingTemplatesInit();
-  //   toSpecTemplatesInit();
-  //   toServerInit();
+  // toShippingTemplatesInit();
   if (operationId.value != 0) {
     getStoreGoodsDetailApi({
       id: operationId.value,
@@ -663,8 +643,10 @@ const toInit = () => {
           createForm.value.spec = goods.sku;
         }
         createForm.value.content = goods.content;
+
         proxy?.$refs["editorRef"]?.setContent(goods.content);
-        createForm.value.cate_id = $utils.getArrayColumnByKey(goods.cate, "id");
+        createForm.value.category_id = $utils.getArrayColumnByKey(goods.category, "id");
+
         createForm.value.goods_label = $utils.getArrayColumnByKey(
           goods.label,
           "id"
@@ -688,7 +670,7 @@ const toInit = () => {
 
 const stepFields = ref<any>([
   [],
-  ["cate_id", "goods_name", "goods_images", "goods_label", "goods_unit"],
+  ["category_id", "goods_name", "goods_images", "goods_label", "goods_unit"],
   [],
   ["content"],
   ["delivery_type"],
@@ -738,11 +720,10 @@ const getStepFieldsRules = () => {
 
 const specName = ref<string>("");
 
-const specValue = ref<string[]>([]);
-
-const specData = ref<any>([]);
+const specData = ref<any[]>([]);
 
 const onCreateSpecName = () => {
+  console.log(specData.value)
   if (specName.value == "") {
     $utils.errorMsg("请输入规格名");
     return false;
@@ -753,7 +734,7 @@ const onCreateSpecName = () => {
   }
   specData.value.push({
     name: specName.value,
-    value: [],
+    values: [],
   });
   specName.value = "";
 };
@@ -848,17 +829,6 @@ const getAttrForm = (
   proxy?.$refs['createRef'].validateField(["spec"], (valid: boolean) => { });
 };
 
-const storeGoodsSpecTemplatesCreateRef = ref<HTMLElement>();
-
-const onCreateSpecTemplates = () => {
-  proxy?.$refs["storeGoodsSpecTemplatesCreateRef"]?.open();
-};
-
-const storeGoodsServerCreateRef = ref<HTMLElement>();
-
-const onCreateGoodsServerTemplate = () => {
-  proxy?.$refs["storeGoodsServerCreateRef"]?.open();
-};
 
 const storeShippingTemplatesCreateRef = ref<HTMLElement>();
 
@@ -880,33 +850,21 @@ const toShippingTemplatesInit = () => {
 
 const storeGoodsSpecRef = ref<HTMLElement>();
 
-const specTemplatesData = ref<any>([]);
+const specTemplatesItem = ref<any>({});
 
 const specTemplatesId = ref<number | undefined>();
 
-const toSpecTemplatesInit = () => {
-  getStoreGoodsSpecTemplatesSelectApi()
-    .then((res: Result) => {
-      specTemplatesData.value = res.data;
-    })
-    .catch((err: ResultError) => {
-      $utils.errorMsg(err);
-    });
-};
-
-const onSelectedTemplates = () => {
-  if (!specTemplatesId.value) {
+const onChangeStoreGoodsSelectSpecTemplates = (item: any) => {
+  if (!item) {
     $utils.errorMsg("请先选择规格模版!");
     return false;
   }
-  var item = $utils.getArrayItemByKeyValue(
-    specTemplatesData.value,
-    "id",
-    specTemplatesId.value
-  );
+  specTemplatesItem.value = item;
+  var item = specTemplatesItem.value;
   specData.value = $utils.toArray(item.attrs) || [];
   proxy?.$refs["storeGoodsSpecRef"]?.refresh(specData.value);
-};
+}
+
 
 onMounted(() => {
   let query = router.currentRoute.value.query;

@@ -21,7 +21,12 @@ abstract class EnumInstance
     public static $class = [
         'status'=> '\\app\\common\\enum\\StatusEnum',
         "store"=>[
-            "shipping_type"=>"\\app\\common\\enum\\store\\ShippingTypeEnum"
+            "shipping_type"=>"\\app\\common\\enum\\store\\ShippingTypeEnum",
+            'delivery_shipping'=>'\\app\\common\\enum\\store\\DeliveryShippingEnum',
+            'goods'=>[
+                'spec_type'=>'\\app\\common\\enum\\store\\goods\\SpecTypeEnum',
+                'status'=>'\\app\\common\\enum\\store\\goods\\StatusEnum',
+            ]
         ]
     ];
     public function __construct(){

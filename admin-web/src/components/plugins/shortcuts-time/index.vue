@@ -97,7 +97,6 @@ const shortcuts = ref<shortcutsItem[]>([
 ],);
 
 const onChange = (dateString: any, date: any) => {
-    console.log('onChange: ', dateString, date);
     emit("change", dateString);
     emit("update:modelValue", dateString);
 }
@@ -108,7 +107,6 @@ const onSelect = (dateString: any, date: any) => {
     // emit("update:modelValue", dateString);
 }
 const onOk = (dateString: any, date: any) => {
-    console.log('onOk: ', dateString, date);
     emit("change", dateString);
     emit("update:modelValue", dateString);
 }

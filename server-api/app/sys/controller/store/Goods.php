@@ -7,8 +7,9 @@ use app\sys\controller\Base;
 use think\facade\{
     App
 };
-use app\common\services\store\GoodsService;
-use app\common\services\store\GoodsSkuService;
+use app\sys\services\store\GoodsService;
+use app\sys\services\store\GoodsSkuService;
+
 /**
  * 商城-商品
  * Class Goods
@@ -35,10 +36,22 @@ class Goods extends Base
     {
         $param = $this->request->getMore([
             ['goods_name', ''],
-            ['cate_id', ''],
+            ['category_id', ''],
             'destroy'
         ]);
         $this->success("获取成功",$this->service->getGoodsList($param));
+    }
+
+    /**
+     * 商品详细
+     * @noAuth(true)
+     * @method(GET)
+     */
+    public function detail(){
+        if (!$id = $this->request->param('id')) {
+            $this->error('参数错误!');
+        }
+        $this->success("获取成功",$this->service->getGoodsFormDetail($id));
     }
 
     /**
@@ -48,7 +61,7 @@ class Goods extends Base
     public function create()
     {
         $data = $this->request->postMore([
-            ['cate_id', []],
+            ['category_id', []],
             ['goods_name', ''],
             ['goods_images',[]],
             ['goods_label',[]],
@@ -79,4 +92,64 @@ class Goods extends Base
         }
         $this->error('添加失败!');
     }
+
+
+    /**
+     * 编辑商品
+     * @method(PUT)
+     */
+    public function update()
+    {
+        if (!$id = $this->request->param('id')) {
+            $this->error('参数错误!');
+        }
+        $data = $this->request->postMore([
+            ['category_id', []],
+            ['goods_name', ''],
+            ['goods_images',[]],
+            ['goods_label',[]],
+            ['goods_unit',0],
+            ['spec_type',1],
+            ['content',''],
+            ['delivery_type',[]],
+            ['delivery_shipping',1],
+            ['delivery_shipping_price',''],
+            ['delivery_shipping_temp_id',0],
+            ['sales_initial',0],
+            ['keywords',''],
+            ['selling_point',''],
+            ['sort', 0],
+            ['goods_server',[]],
+            ['buy_limit_status',0],
+            ['buy_limit',0],
+            ['buy_limit_type',0],
+            ['buy_least_status',0],
+            ['buy_least',0],
+            ['buy_least_type',0],
+        ]);
+        if (!$data['goods_name']) $this->error('请输入商品名称！');
+        $spec = $this->request->param('spec');
+        if($this->service->updateGoods((int)$id,$data ,$spec)){
+            $this->success('修改成功!');
+        }
+        $this->error('修改失败!');
+    }
+
+    /**
+     * 生成规格
+     * @noAuth(true)
+     * @method(POST)
+     */
+    public function createSpec(){
+
+        $data = $this->request->postMore([
+            ['spec', []],
+        ]);
+        if (!$data['spec']) $this->error('规格不能为空！');
+        if($data = app(GoodsSkuService::class)->createCacheSpec( $data['spec'] )){
+            $this->success('生成成功!',$data);
+        }
+        $this->error('生成失败!');
+    }
+
 }

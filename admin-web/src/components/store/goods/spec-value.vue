@@ -39,9 +39,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="goods-spec-value-box" v-if="item.values.length > 0">
+                        <div class="goods-spec-value-box" v-if="item.values && item.values.length > 0">
                             <template v-for="(items, idx) in item.values" :key="idx">
-                                <div class="goods-spec-value-item" :class="item.is_image == 1 ? 'is-image' : ''">
+                                <div class="goods-spec-value-item" v-if="items" :class="item.is_image == 1 ? 'is-image' : ''">
                                     <span class="goods-spec-value-item-drag icon icon-drag" draggable="true"
                                         @dragstart="specValueDragstart(index, items)"
                                         @dragenter="specValueDragenter(index, items, $event)"
@@ -90,7 +90,6 @@ const {
 const emit = defineEmits(["update:modelValue"]);
 
 const specData = ref<any[]>(props.modelValue);
-
 
 const onCreateSpecValue = (index: number) => {
     if (specValue.value[index] == "" || specValue.value[index] == undefined) {
@@ -190,6 +189,7 @@ const refresh = (data: any = []) => {
 watch(
     () => specData.value,
     (val) => {
+        console.log(1111,val)
         emit("update:modelValue", val);
     },
     { deep: true }

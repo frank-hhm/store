@@ -8,7 +8,7 @@
                     children: 'children'
                 }" :max-tag-count="1" @popup-visible-change="visibleChange" />
         </div>
-        <div class="ml20" v-permission="'store-goods_label-create'">
+        <div class="ml20" v-permission="'store-goods-category-create'">
             <a-button type="text" @click="onCreateLabel">新增分类</a-button>
         </div>
 
@@ -22,12 +22,11 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref, getCurrentInstance, watch } from "vue";
+import { ref, getCurrentInstance, watch, onMounted, nextTick } from "vue";
 import { getStoreGoodsCategorySelectTreeApi } from "@/api/store/goods-category";
 import { useSetting } from "@/hooks/useSetting";
 import { PageLimitType, Result, ResultError } from "@/types";
 import createGoodsCategoryCreate from "@/views/store/goods-category/create.vue";
-
 
 const {
     proxy,
@@ -57,7 +56,6 @@ const visibleChange = (res: any) => {
     }
 }
 
-
 const initLoading = ref<boolean>(false)
 
 const toInit = () => {
@@ -73,13 +71,25 @@ const toInit = () => {
         });
 };
 
-
 const createGoodsCategoryCreateRef = ref<HTMLElement>();
 
 const onCreateLabel = () => {
     proxy?.$refs["createGoodsCategoryCreateRef"]?.open();
 };
 
+onMounted(() => {
+    nextTick(() => {
+        emit("update:modelValue", props.modelValue);
+    })
+})
+
+watch(
+    () => props.modelValue,
+    () => {
+        _modelValue.value = props.modelValue;
+        emit("update:modelValue", _modelValue.value);
+    }
+)
 watch(
     () => _modelValue.value,
     (val) => {

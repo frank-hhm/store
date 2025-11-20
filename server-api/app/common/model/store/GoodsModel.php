@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace app\common\model\store;
 
+use app\common\enum\EnumFactory;
 use app\common\model\BaseModel;
 use app\common\traits\ModelTrait;
 use think\model\concern\SoftDelete;
@@ -55,30 +56,41 @@ class GoodsModel extends BaseModel
     /**
      * 关联商品标签中间模型
      */
-    public function labelRel(){
+    public function labelRel(): \think\model\relation\HasMany
+    {
         return $this->hasMany(GoodsLabelRelModel::class,'goods_id','id');
     }
 
     /**
      * 关联商品标签
      */
-    public function label(){
+    public function label(): \think\model\relation\BelongsToMany
+    {
         return $this->belongsToMany(GoodsLabelModel::class,GoodsLabelRelModel::class,'label_id','goods_id');
     }
     /**
      * 关联商品服务中间模型
      */
-    public function serverRel(){
+    public function serverRel(): \think\model\relation\HasMany
+    {
         return $this->hasMany(GoodsServerRelModel::class,'goods_id','id');
     }
 
     /**
      * 关联商品服务
      */
-    public function server(){
+    public function server(): \think\model\relation\BelongsToMany
+    {
         return $this->belongsToMany(GoodsServerModel::class,GoodsServerRelModel::class,'server_id','goods_id');
     }
 
+    /**
+     * 关联商品规格
+     */
+    public function sku(): \think\model\relation\HasMany
+    {
+        return $this->hasMany(GoodsSkuModel::class,'goods_id','id');
+    }
 
     /**
      * 商品图片设置器

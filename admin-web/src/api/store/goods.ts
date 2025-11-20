@@ -46,14 +46,14 @@ export const updateStoreGoodsApi = (data:any) => {
         data
     })
 }
-export const deleteStoreGoodsApi = (data:{id:number|string}) => {
+export const deleteStoreGoodsApi = (data:{ids:number[]|string[]}) => {
     return request({
         url: `store.goods/delete`,
         method: 'DELETE',
         data
     })
 }
-export const destroyStoreGoodsApi = (data:{id:number|string}) => {
+export const destroyStoreGoodsApi = (data:{ids:number[]|string[]}) => {
     return request({
         url: `store.goods/destroy`,
         method: 'DELETE',

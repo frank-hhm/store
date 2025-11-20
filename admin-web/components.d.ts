@@ -34,6 +34,7 @@ declare module '@vue/runtime-core' {
     SelectLabel: typeof import('./src/components/store/goods/select-label.vue')['default']
     SelectModal: typeof import('./src/components/media/select-modal.vue')['default']
     SelectServer: typeof import('./src/components/store/goods/select-server.vue')['default']
+    SelectSpecTemplates: typeof import('./src/components/store/goods/select-spec-templates.vue')['default']
     SelectUnit: typeof import('./src/components/store/goods/select-unit.vue')['default']
     ShortcutsTime: typeof import('./src/components/plugins/shortcuts-time/index.vue')['default']
     SpecValue: typeof import('./src/components/store/goods/spec-value.vue')['default']

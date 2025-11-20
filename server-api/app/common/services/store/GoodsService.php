@@ -3,14 +3,19 @@ declare(strict_types=1);
 
 namespace app\common\services\store;
 
+use app\common\constants\StoreConstant;
 use app\common\services\BaseService;
 use app\common\dao\store\GoodsDao;
+use app\common\services\common\CacheService;
 
 /**
  * Class GoodsService
  */
 class GoodsService extends BaseService
 {
+    public string $cacheKey = "store:goods:";
+
+    public mixed $cacheService;
     /**
      * GoodsService constructor.
      * @param GoodsDao $dao
@@ -18,43 +23,18 @@ class GoodsService extends BaseService
     public function __construct(GoodsDao $dao)
     {
         $this->dao = $dao;
+        $this->cacheService = app(CacheService::class);
     }
 
-    /**
-     * 添加商品
-     */
-    public function createGoods(array $data,array $spec = []){
-        $skuService = app(GoodsSkuService::class);
-        // 保存数据
-        return $this->transaction(function () use ($data,$spec,$skuService) {
 
-            $res = $this->dao->create($data);
-            if (!$res) throw new CommonException('保存失败');
-            $id = (int)$res->id;
-            $cateList = [];
-            foreach ($data['cate_id'] as $key => $item) {
-                $cateList[] = [
-                    'cate_id' => $item
-                ];
-            }
-            $labelList = [];
-            foreach ($data['goods_label'] as $key => $item) {
-                $labelList[] = [
-                    'label_id' => $item
-                ];
-            }
-            $serverList = [];
-            foreach ($data['goods_server'] as $key => $item) {
-                $serverList[] = [
-                    'server_id' => $item,
-                    'goods_id' => $id
-                ];
-            }
-            $skuService->saveSku($spec,(int)$data['spec_type'],$id);
-            $res->categoryRel()->saveAll($cateList);
-            $res->labelRel()->saveAll($labelList);
-            $res->serverRel()->saveAll($serverList);
-            return true;
-        });
+    /**
+     * 删除商品详细缓存
+     */
+    public function deleteCache($goodsId = 0){
+        if(!$goodsId){
+            $this->cacheService->clear();
+        }else{
+            $this->cacheService->delete(StoreConstant::GOODS_CACHE_KEY.$goodsId);
+        }
     }
 }

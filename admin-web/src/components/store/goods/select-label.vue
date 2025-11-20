@@ -1,13 +1,13 @@
 <template>
     <div class="store-goods-select-box">
         <div class="store-goods-select">
-            <a-select v-model="_modelValue" multiple placeholder="请选择商品标签" :max-tag-count="1" v-loading="initLoading"
+            <a-select v-model="_modelValue" multiple placeholder="请选择商品标签" :max-tag-count="1"
                 @dropdown-reach-bottom="onReachBottom" @popup-visible-change="visibleChange" @search="handleSearch"
                 allow-clear>
                 <a-option v-for="item in labelData" :key="item.id" :label="item.label_name" :value="item.id" />
             </a-select>
         </div>
-        <div class="ml20" v-permission="'store-goods_label-create'">
+        <div class="ml20" v-permission="'store-goods-label-create'">
             <a-button type="text" @click="onCreateLabel">新增标签</a-button>
         </div>
 
@@ -21,7 +21,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref, getCurrentInstance, watch } from "vue";
+import { ref, getCurrentInstance, watch, onMounted, nextTick } from "vue";
 import { getStoreGoodsLabelListApi } from "@/api/store/goods-label";
 import { useSetting } from "@/hooks/useSetting";
 import { PageLimitType, Result, ResultError } from "@/types";
@@ -52,7 +52,6 @@ const _modelValue = ref<any>(props.modelValue);
 const labelData = ref<any[]>([])
 
 const onReachBottom = () => {
-    console.log(111)
     listPage.value.page++;
     toInit()
 }
@@ -61,7 +60,6 @@ const visibleChange = (res: any) => {
     if (res === true) {
         toInit(true);
     }
-    console.log(res)
 }
 
 const listPage = ref<any>({
@@ -117,6 +115,20 @@ const createGoodsLabelCreateRef = ref<HTMLElement>();
 const onCreateLabel = () => {
     proxy?.$refs["createGoodsLabelCreateRef"]?.open();
 };
+
+onMounted(() => {
+    nextTick(() => {
+        emit("update:modelValue", props.modelValue);
+    })
+})
+
+watch(
+    () => props.modelValue,
+    () => {
+        _modelValue.value = props.modelValue;
+        emit("update:modelValue", _modelValue.value);
+    }
+)
 
 watch(
     () => _modelValue.value,

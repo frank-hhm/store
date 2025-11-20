@@ -1,31 +1,35 @@
 <template>
     <div class="store-goods-select-box">
         <div class="store-goods-select">
-            <a-select v-model="_modelValue" placeholder="请选择商品单位" :max-tag-count="1"
-                @dropdown-reach-bottom="onReachBottom" @popup-visible-change="visibleChange" @search="handleSearch"
-                allow-clear>
-                <a-option v-for="item in unitData" :key="item.id" :label="item.unit_name" :value="item.id" />
+            <a-select placeholder="请选择规格" v-model="_modelValue" @popup-visible-change="visibleChange"
+                @search="handleSearch" :max-tag-count="1" @dropdown-reach-bottom="onReachBottom">
+                <a-option v-for="item in specTemplatesData" :key="item.id" :label="item.spec_temp_name"
+                    :value="item.id">{{ item.spec_temp_name }}</a-option>
             </a-select>
+            <div class="ml20" v-permission="'store-goods-spec-templates-create'">
+                <a-button type="text" @click="onCreate">新增规格</a-button>
+            </div>
         </div>
-        <div class="ml20" v-permission="'store-goods-unit-create'">
-            <a-button type="text" @click="onCreateLabel">新增单位</a-button>
+        <div class="mt10">
+            <a-button type="outline" @click="onSelectedTemplates">
+                确定模版
+            </a-button>
         </div>
-
-        <!-- 添加商品标签组件 -->
-        <createGoodsUnitCreate ref="createGoodsUnitCreateRef" @success="toInit(true)"></createGoodsUnitCreate>
+        <createGoodsSpecTemplatesCreate ref="createGoodsSpecTemplatesCreateRef" @success="toInit(true)">
+        </createGoodsSpecTemplatesCreate>
     </div>
 </template>
 <script lang="ts">
 export default {
-    name: "storeGoodsSelectUnit",
+    name: "storeGoodsSelectSpecTemplates",
 };
 </script>
 <script lang="ts" setup>
 import { ref, getCurrentInstance, watch, nextTick, onMounted } from "vue";
-import { getStoreGoodsUnitListApi } from "@/api/store/goods-unit";
+import { getStoreGoodsSpecTemplatesListApi } from "@/api/store/goods-spec-templates";
 import { useSetting } from "@/hooks/useSetting";
 import { PageLimitType, Result, ResultError } from "@/types";
-import createGoodsUnitCreate from "@/views/store/goods-unit/create.vue";
+import createGoodsSpecTemplatesCreate from "@/views/store/goods-spec-templates/create.vue";
 
 
 const {
@@ -38,16 +42,16 @@ const props = withDefaults(
         height?: string;
     }>(),
     {
-        modelValue:null
+        modelValue: null,
     }
 );
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "change"]);
 
 const _modelValue = ref<any>(props.modelValue);
 
 
-const unitData = ref<any[]>([])
+const specTemplatesData = ref<any[]>([])
 
 const onReachBottom = () => {
     listPage.value.page++;
@@ -87,15 +91,15 @@ const toInit = (isInit: boolean = false) => {
     let obj: any = {};
     obj.page = listPage.value.page;
     obj.limit = listPage.value.limit;
-    obj.unit_name = searchValue.value;
+    obj.server_name = searchValue.value;
     // if()
     initLoading.value = true;
-    getStoreGoodsUnitListApi(obj)
+    getStoreGoodsSpecTemplatesListApi(obj)
         .then((res: Result) => {
             if (isInit) {
-                unitData.value = res.data.data
+                specTemplatesData.value = res.data.data
             } else {
-                unitData.value = [...unitData.value, ...res.data.data]
+                specTemplatesData.value = [...specTemplatesData.value, ...res.data.data]
             }
 
             listPage.value.total = res.data.total;
@@ -108,10 +112,10 @@ const toInit = (isInit: boolean = false) => {
 };
 
 
-const createGoodsUnitCreateRef = ref<HTMLElement>();
+const createGoodsSpecTemplatesCreateRef = ref<HTMLElement>();
 
-const onCreateLabel = () => {
-    proxy?.$refs["createGoodsUnitCreateRef"]?.open();
+const onCreate = () => {
+    proxy?.$refs["createGoodsSpecTemplatesCreateRef"]?.open();
 };
 
 onMounted(() => {
@@ -135,17 +139,25 @@ watch(
     },
     { deep: true }
 );
+
+const onSelectedTemplates = () => {
+    emit("change", $utils.getArrayItemByKeyValue(
+        specTemplatesData.value,
+        "id",
+        _modelValue.value
+    ));
+}
 </script>
 
 
 <style scoped>
 .store-goods-select-box {
     width: 100%;
-    display: flex;
-    align-items: center;
 }
 
 .store-goods-select {
     width: calc(100% - 120px);
+    display: flex;
+    align-items: center;
 }
 </style>
